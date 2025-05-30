@@ -1,16 +1,112 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<style>
+    .mud-appbar {
+        position: fixed !important;
+        top: 0;
+        z-index: 1100;
+    }
 
-        <article class="content px-4">
+    .mud-appbar:nth-of-type(2) {
+        top: 66px !important;
+    }
+
+    .mud-main-content {
+        padding-top: 144px !important; /* Account for both app bars */
+    }
+
+    .mud-button {
+        text-transform: none !important;
+    }
+
+    .mud-button .mud-button-label {
+        font-weight: 300;
+        letter-spacing: -.1px;
+        font-family: 'Poppins';
+    }
+</style>
+
+<MudLayout>
+    <!-- Top Navigation Bar -->
+    <MudAppBar Elevation="1" Dense="false" Style="background-color: white; color: #333; height: 65px;">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="px-4 py-3">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <img src="images/sys/logo.png" style="width: 41px;" />
+                    </MudStack>
+                </MudStack>
+                <img src="images/sys/user.png" style="width: 37px;" />
+            </MudStack>
+        </MudContainer>
+    </MudAppBar>
+
+    <!-- Secondary Navigation Bar -->
+    <MudAppBar Elevation="0" Dense="true" Style="background-color: #f8f9fa; border-bottom: 1px solid #e9ecef; top: 66px;">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="px-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                <MudButton StartIcon="@Icons.Material.Filled.Dashboard"
+                           Color="Color.Primary"
+                           Variant="Variant.Text"
+                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                           Class="text-capitalize">
+                    Dashboard
+                </MudButton>
+
+                <MudButton StartIcon="@Icons.Material.Filled.AllInbox"
+                           Color="Color.Default"
+                           Variant="Variant.Text"
+                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                           Class="text-capitalize">
+                    Draft Letter of credit
+                </MudButton>
+
+                <MudButton StartIcon="@Icons.Material.Filled.Assignment"
+                           Color="Color.Default"
+                           Variant="Variant.Text"
+                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                           Class="text-capitalize">
+                    Letter of Credit
+                </MudButton>
+
+                <MudButton StartIcon="@Icons.Material.Filled.Article"
+                           Color="Color.Default"
+                           Variant="Variant.Text"
+                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                           Class="text-capitalize">
+                    Inquiry / Reports
+                </MudButton>
+
+            </MudStack>
+        </MudContainer>
+    </MudAppBar>
+
+    <!-- Main Content -->
+    <MudMainContent Class="pt-16">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="h-100 pt-5 pb-10 px-5 px-md-12">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<GlobalDesign />
+
+@code {
+    bool _drawerOpen = true;
+    bool _isDarkMode = false;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    void ToggleDarkMode()
+    {
+        _isDarkMode = !_isDarkMode;
+        // You can implement actual theme switching logic here
+    }
+}
+
