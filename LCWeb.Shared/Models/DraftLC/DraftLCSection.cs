@@ -4,7 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using LCWeb.Shared.Enums;
+using LCWeb.Shared.Models.LC;
 
 namespace LCWeb.Shared.Models.DraftLC
 {
@@ -12,8 +15,10 @@ namespace LCWeb.Shared.Models.DraftLC
     {
         [Key]
         public int Id { get; set; }
+        public LCStatus LCStatus { get; set; }
 
         //SECTION 1
+        public DateTime S1Date { get; set; }
         public string S1PONo {  get; set; } = string.Empty;
         public string S1LCType {  get; set; } = string.Empty;
         public string S1Confirmation {  get; set; } = string.Empty;
@@ -37,7 +42,17 @@ namespace LCWeb.Shared.Models.DraftLC
         public string S4BeneficiaryName { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(18,2)")]
+        public decimal S4Currency { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal S4Figures { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal S4ForexRate { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal S4LCAmount { get; set; } = 0;
+
         public string S4ItemDescription { get; set; } = string.Empty;
 
         //SECTION 5
@@ -70,6 +85,9 @@ namespace LCWeb.Shared.Models.DraftLC
 
         //SECTION 11
         public string S11TermsAndCond { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public List<LetterOfCredit>? LetterOfCredits { get; set; }
 
     }
 }

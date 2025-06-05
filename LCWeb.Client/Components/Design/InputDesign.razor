@@ -1,19 +1,56 @@
 ﻿<style>
-    .input-cont label {
+    .input-main-cont{
+        margin-top: 10px;
+        padding-top: 25px;
+        border-top: 1px solid #E1E1E1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .input-cont{
+        display: flex;
+        align-items: center;
+    }
+
+    .input-cont .inp-label {
         font-size: 13px;
-        margin-bottom: 6px;
         font-family: 'Poppins';
+        width: 155px;
+        margin-right: 10px;
     }
 
     .input-cont input, textarea, select {
-        font-family: 'Poppins';
         width: 100%;
-        padding: 12px;
+        font-family: 'Poppins';
+        padding: 9px;
         border: 1px solid #ccd1da;
-        border-radius: 10px;
+        border-radius: 5px;
         font-size: 13px;
         outline: none;
-        margin-bottom: 15px;
+        margin-bottom: 9px;
+    }
+
+    .main-input-cont {
+        display: flex;
+        flex-direction: column;
+        font-family: 'Poppins';
+    }
+
+    .main-input-cont label {
+        font-size: 13px;
+        font-family: 'Poppins';
+        margin-bottom: 5px;
+    }
+
+    .main-input-cont input, textarea, select {
+        width: 100%;
+        font-family: 'Poppins';
+        padding: 9px;
+        border: 1px solid #ccd1da;
+        border-radius: 5px;
+        font-size: 13px;
+        outline: none;
+        margin-bottom: 13px;
     }
 
     .mud-input-cont{

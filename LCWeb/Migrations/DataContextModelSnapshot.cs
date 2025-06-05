@@ -30,6 +30,9 @@ namespace LCWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("LCStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("S10BankCharges")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -41,6 +44,9 @@ namespace LCWeb.Migrations
                     b.Property<string>("S1Confirmation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("S1Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("S1Enclosure")
                         .IsRequired()
@@ -96,6 +102,15 @@ namespace LCWeb.Migrations
                     b.Property<string>("S4BeneficiaryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("S4Currency")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("S4Figures")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("S4ForexRate")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("S4ItemDescription")
                         .IsRequired()
@@ -157,6 +172,161 @@ namespace LCWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DraftLCSections");
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.LC.LetterOfCredit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateOpened")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DraftLCSectionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LCNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LCStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LatestShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OpeningBank")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReceivedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DraftLCSectionId");
+
+                    b.ToTable("LetterOfCredits");
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.Maintenance.AmendmentReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("LCNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OpeningBank1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OpeningBank2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReceivedFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ReceivedTo")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AmendmentReports");
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.Maintenance.MonitoringReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("LCNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OpenedFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OpenedTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OpeningBank1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OpeningBank2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PONo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MonitoringReports");
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.Maintenance.VendorMaintenance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address3")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VendorMaintenances");
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.LC.LetterOfCredit", b =>
+                {
+                    b.HasOne("LCWeb.Shared.Models.DraftLC.DraftLCSection", "DraftLCSection")
+                        .WithMany("LetterOfCredits")
+                        .HasForeignKey("DraftLCSectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DraftLCSection");
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.DraftLC.DraftLCSection", b =>
+                {
+                    b.Navigation("LetterOfCredits");
                 });
 #pragma warning restore 612, 618
         }

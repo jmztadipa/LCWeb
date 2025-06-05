@@ -1,0 +1,26 @@
+﻿<div class="input-main-cont">
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label">Issuing Bank :</label>
+			<input type="text" placeholder="-" @bind="payload.S2IssuingBank" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Date of expiry / No. Of Days :</label>
+			<input type="date" @bind="payload.S2DateOfExpiry" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Remarks :</label>
+			<input type="text" placeholder="-" @bind="payload.S2Remarks" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Place of Expiry :</label>
+			<input type="text" placeholder="-" @bind="payload.S2PlaceOfExpiry" />
+		</div>
+	</div>
+	<div class="c2"></div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

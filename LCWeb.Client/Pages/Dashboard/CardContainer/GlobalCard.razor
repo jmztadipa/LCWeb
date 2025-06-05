@@ -1,0 +1,29 @@
+﻿
+<MudItem xs="12" sm="6" lg="4" xl="3">
+    <div class="card-container d-flex flex-column position-relative @Style">
+        <div class="img-cont">
+            <img src="@Icon" />
+        </div>
+        <div class="d-flex flex-column pb-10 px-5">
+            <span class="title-text">@Title</span>
+            <span class="amount-text">(@string.Format("{0:N0}", Value))</span>
+        </div>
+        <div class="info-cont">
+            <span>More Info</span>
+            <i class="fi fi-rr-arrow-circle-right"></i>
+        </div>
+    </div>
+</MudItem>
+
+@code {
+
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+    [Parameter]
+    public decimal Value { get; set; } = 0;
+
+}

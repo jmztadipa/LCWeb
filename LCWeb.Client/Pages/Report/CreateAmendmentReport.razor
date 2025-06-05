@@ -1,0 +1,94 @@
+﻿@using LCWeb.Shared.DTOs.MaintenanceDTO
+@inject IClientReportService ClientReportService
+
+<InputDesign />
+
+<MudDialog>
+    <DialogContent>
+
+        <div class="px-sm-2 mt-n4 px-1 pb-4 form-div">
+            @if (Id == null)
+            {
+                <DialogHeader title="ADD REPORT" icon="@Icons.Material.Filled.Add" />
+            }
+            else
+            {
+                <DialogHeader title="EDIT REPORT" icon="@Icons.Material.Filled.Edit" />
+            }
+
+            <div class="mt-3">
+                <form @onsubmit="HandleSubmit">
+                    <div class="main-input-cont">
+                        <label class="d-flex">LC No. <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                        <input type="text" @bind="payload.LCNo" placeholder="sample no.">
+                    </div>
+                    <div class="main-input-cont">
+                        <label class="d-flex mb-2">Opening Bank</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="text" @bind="payload.OpeningBank1" placeholder="-"> 
+                            <span class="mt-n2">:</span>
+                            <input type="text" @bind="payload.OpeningBank2" placeholder="-">
+                        </div>
+                    </div>
+                    <div class="main-input-cont">
+                        <label class="d-flex">Received From <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                        <input type="date" @bind="payload.ReceivedFrom" placeholder="-">
+                    </div>
+                    <div class="main-input-cont">
+                        <label class="d-flex">Received To <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                        <input type="date" @bind="payload.ReceivedTo" placeholder="-">
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <SubmitButton isLoading="isLoading" button_name="SUBMIT" className="submit-btn" />
+                        <SubmitButton type="button" button_name="REFRESH" className="def-btn" OnClick="Refresh" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new MudDialogInstance();
+
+    [Parameter] public int? Id { get; set; }
+
+    [Parameter] public CreateAmendmentReportDTO? payload { get; set; } = new CreateAmendmentReportDTO();
+
+    public GetAmendmentReportDTO? ResponseData = new GetAmendmentReportDTO();
+
+    public bool isLoading = false;
+
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            ResponseData = await ClientReportService.GetSingleAmendmentReport((int)Id);
+
+            payload.LCNo = ResponseData.LCNo;
+            payload.OpeningBank1 = ResponseData.OpeningBank1;
+            payload.OpeningBank2 = ResponseData.OpeningBank2;
+            payload.ReceivedFrom = ResponseData.ReceivedFrom;
+            payload.ReceivedTo = ResponseData.ReceivedTo;
+        }
+        else
+        {
+            payload = new CreateAmendmentReportDTO();
+        }
+    }
+
+    private void Refresh()
+    {
+        payload = new CreateAmendmentReportDTO();
+    }
+
+    void HandleSubmit()
+    {
+        MudDialog.Close(DialogResult.Ok(payload));
+    }
+
+}

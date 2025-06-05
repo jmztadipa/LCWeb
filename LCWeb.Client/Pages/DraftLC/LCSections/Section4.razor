@@ -1,0 +1,20 @@
+﻿<div class="input-main-cont d-flex" >
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label text-nowrap">
+				T.T Reimbursement is :
+			</label>
+			<MudRadioGroup @bind-Value="payload.S5TTReimbursement">
+				<MudRadio Value="@("Acceptance")" Color="Color.Primary" UncheckedColor="Color.Default">Acceptance</MudRadio>
+				<MudRadio Value="@("Not acceptable")" Color="Color.Info" UncheckedColor="Color.Default">Not acceptable</MudRadio>
+				<MudRadio Value="@("At beneficiary's Expense")" Color="Color.Warning" UncheckedColor="Color.Default">At beneficiary's Expense</MudRadio>
+				<MudRadio Value="@("At Applicant's Expense")" Color="Color.Success" UncheckedColor="Color.Default">At Applicant's Expense</MudRadio>
+			</MudRadioGroup>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

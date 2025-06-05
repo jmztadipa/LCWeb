@@ -1,0 +1,184 @@
+﻿@page "/draft-lc-releasing"
+@using LCWeb.Client.Components.Dialog
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject IClientDraftLCService ClientDraftLCService
+
+<PageTitle>Draft LC Releasing</PageTitle>
+
+<NavHeader _items="_items" title="Draft LC Releasing" />
+
+<div class="d-flex gap-2 mb-5">
+    <button class="header-btn" @onclick="NavigateToEdit" disabled="@(!selectedId.HasValue)">
+        <i class="fa-solid fa-pen"></i>
+        EDIT
+    </button>
+    <button class="header-btn" @onclick="ReleaseEntry" disabled="@(!selectedId.HasValue)">
+        <i class="fa-solid fa-box-open"></i>
+        RELEASE
+    </button>
+    <button class="header-btn">
+        <i class="fa-solid fa-print"></i>
+        PRINT
+    </button>
+    <button class="header-btn">
+        <i class="fa-solid fa-eye"></i>
+        VIEW REVISION
+    </button>
+</div>
+
+    <PaginatedTable 
+        RowsPerPageChanged="HandleRowsPerPageChangedInRazor"
+        SearchBar="HandleSearchTextValue"
+        Paginated="HandlePaginatedBtn"
+        TotalItems="@TotalItems"
+        tableLoading="tableLoading"
+        THCount="8"
+        Title="LC RELEASING"
+        Items="ResponseData"
+        Context="item"
+        ID="table">
+
+        <TableHeader>
+            <th></th>
+            <th class="text-center">Id</th>
+            <th class="text-center">PO No(s).</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Version</th>
+        </TableHeader>
+        <RowTemplate>
+            <td class="text-end text-sm-center pt-4">
+                <input type="checkbox" checked="@(selectedId == item.Id)" @onchange="(e) => OnCheckboxChangedHtml(e, item.Id)" style="height: 15px; width: 15px; cursor: pointer;" />
+            </td>
+            <td data-title="Id" class="py-sm-4 py-3 text-end text-sm-center">@item.Id</td>
+            <td data-title="PO No(s)." class="py-sm-4 py-3 text-end text-sm-center">@item.S1PONo</td>
+            <td data-title="Status" class="py-sm-4 py-3 text-end text-sm-center">OPEN</td>
+            <td data-title="Version" class="py-sm-4 py-3 text-end text-sm-center">-</td>
+        </RowTemplate>
+    </PaginatedTable>
+
+@code {
+
+    public bool Basic_CheckBox1 { get; set; } = true;
+
+    private List<BreadcrumbItem> _items =
+    [
+        new("LETTER OF CREDIT", href: "/"),
+        new("LC RELEASING", href: null, disabled: true)
+    ];
+
+    private int RowsPerPage { get; set; } = 10;
+    public string TextValue { get; set; } = string.Empty;
+    private int TotalItems { get; set; } = 0;
+    private GetPaginatedDTO Paginated = new GetPaginatedDTO();
+    private List<GetLCReleasingDTO> ResponseData = new List<GetLCReleasingDTO>();
+
+    private bool tableLoading = true;
+
+    private int? selectedId = null;
+
+    private void OnCheckboxChangedHtml(ChangeEventArgs e, int id)
+    {
+        var isChecked = (bool)e.Value;
+
+        if (isChecked)
+        {
+            selectedId = id;
+        }
+        else if (selectedId == id)
+        {
+            selectedId = null;
+        }
+    }
+
+    private void NavigateToEdit()
+    {
+        if (selectedId.HasValue)
+        {
+            NavigationManager.NavigateTo($"/update-draft-lc-entry/{selectedId.Value}");
+        }
+    }
+
+    private async Task ReleaseEntry()
+    {
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Do you want to release the selected Draft LC?" }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraSmall,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = DialogService.Show<ApprovalDialog>("Letter of Credit", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled && (bool)result.Data)
+        {
+            if (selectedId.HasValue)
+            {
+                await ClientDraftLCService.ReleaseDraftLC((int)selectedId);
+            }
+        }
+        await LoadData();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        tableLoading = true;
+        await LoadData();
+        tableLoading = false;
+    }
+
+    private async void HandleRowsPerPageChangedInRazor(TableStates state)
+    {
+        tableLoading = true;
+        RowsPerPage = state.PageSize;
+        Paginated.Skip = state.Page * state.PageSize;
+        Paginated.Take = state.PageSize;
+        await LoadData();
+        tableLoading = false;
+        StateHasChanged();
+    }
+
+    private async void HandleSearchTextValue(string textValue)
+    {
+        if (!string.IsNullOrWhiteSpace(textValue))
+        {
+            tableLoading = true;
+            Paginated.SearchValue = textValue;
+            await LoadData();
+            tableLoading = false;
+            StateHasChanged();
+        }
+        else
+        {
+            tableLoading = true;
+            Paginated.SearchValue = string.Empty;
+            await LoadData();
+            tableLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async void HandlePaginatedBtn(TableStates state)
+    {
+        tableLoading = true;
+        Paginated.Skip = state.Page * state.PageSize;
+        Paginated.Take = state.PageSize;
+        await LoadData();
+        tableLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadData()
+    {
+        PaginatedTableResponse<GetLCReleasingDTO> response = await ClientDraftLCService.GetDraftLCSections(Paginated);
+        TotalItems = response.Count;
+        ResponseData = response.ResponseData;
+    }
+
+}

@@ -1,0 +1,29 @@
+﻿<div class="input-main-cont d-flex">
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label">Manner of Shipment :</label>
+			<MudRadioGroup @bind-Value="payload.S6MannerOfShipment">
+				<MudRadio Value="@("AIR")" Color="Color.Primary" UncheckedColor="Color.Default">AIR</MudRadio>
+				<MudRadio Value="@("SEA")" Color="Color.Info" UncheckedColor="Color.Default">SEA</MudRadio>
+			</MudRadioGroup>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Credit Available by :</label>
+			<div class="d-flex">
+				<MudRadioGroup @bind-Value="payload.S3CreditAvailBy">
+					<MudRadio Value="@("FOB")" Color="Color.Primary" UncheckedColor="Color.Default">FOB</MudRadio>
+					<MudRadio Value="@("CNF Manila")" Color="Color.Info" UncheckedColor="Color.Default">CNF Manila</MudRadio>
+					<MudRadio Value="@("CIF Manila")" Color="Color.Warning" UncheckedColor="Color.Default">CIF Manila</MudRadio>
+					<MudRadio Value="@("Ex-works")" Color="Color.Tertiary" UncheckedColor="Color.Default">Ex-works</MudRadio>
+					<MudRadio Value="@("Others")" Color="Color.Error" UncheckedColor="Color.Default">Others</MudRadio>
+				</MudRadioGroup>
+				<input type="text" placeholder="-" disabled @bind="payload.S6ShipmentTerms" />
+			</div>
+		</div>
+	</div>
+	<div class="c2"></div>
+</div>
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

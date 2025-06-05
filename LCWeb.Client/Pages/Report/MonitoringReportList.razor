@@ -1,0 +1,178 @@
+﻿@page "/monitoring-report"
+@using LCWeb.Client.Components.Dialog
+@using LCWeb.Shared.DTOs.MaintenanceDTO
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject IClientReportService ClientReportService
+
+<PageTitle>Monitoring Reports</PageTitle>
+
+<NavHeader _items="_items" title="Monitoring Reports" />
+
+<div class="d-flex gap-2 mb-5">
+    <button class="header-btn add" @onclick="CreateReport">
+        <i class="fa-solid fa-plus"></i>
+        ADD
+    </button>
+    <button class="header-btn" @onclick="UpdateReport" disabled="@(!selectedId.HasValue)">
+        <i class="fa-solid fa-pen"></i>
+        EDIT
+    </button>
+</div>
+
+<PaginatedTable
+    RowsPerPageChanged="HandleRowsPerPageChangedInRazor"
+    SearchBar="HandleSearchTextValue"
+    Paginated="HandlePaginatedBtn"
+    TotalItems="@TotalItems"
+    tableLoading="tableLoading"
+    THCount="8"
+    Title="MONITORING REPORT"
+    Items="ResponseData"
+    Context="item"
+    ID="table">
+
+    <TableHeader>
+        <th></th>
+        <th class="text-center text-nowrap">Id</th>
+        <th class="text-center">LC No.</th>
+        <th class="text-center">PO No.</th>
+        <th class="text-center">Opening Bank</th>
+        <th class="text-center">Received From</th>
+        <th class="text-center">Received To</th>
+    </TableHeader>
+    <RowTemplate>
+        <td class="text-end text-sm-center pt-4 px-7">
+            <input type="checkbox" checked="@(selectedId == item.Id)" @onchange="(e) => OnCheckboxChangedHtml(e, item.Id)" style="height: 15px; width: 15px; cursor: pointer;" />
+        </td>
+        <td data-title="Id" class="py-sm-4 py-3 text-end text-sm-center">@item.Id</td>
+        <td data-title="LC No." class="py-sm-4 py-3 text-end text-sm-center">@item.LCNo</td>
+        <td data-title="PO No." class="py-sm-4 py-3 text-end text-sm-center">@item.PONo</td>
+        <td data-title="Opening Bank" class="py-sm-4 py-3 text-end text-sm-center">@item.OpeningBank1</td>
+        <td data-title="Opened From" class="py-sm-4 py-3 text-end text-sm-center">@item.OpenedFrom.ToString("MM/dd/yyy")</td>
+        <td data-title="Opened To" class="py-sm-4 py-3 text-end text-sm-center">@item.OpenedTo.ToString("MM/dd/yyy")</td>
+    </RowTemplate>
+</PaginatedTable>
+
+@code {
+
+    private List<BreadcrumbItem> _items =
+    [
+        new("INQUIRY/REPORTS", href: "/"),
+        new("REPORTS", href: null, disabled: true)
+    ];
+
+    private int RowsPerPage { get; set; } = 10;
+    public string TextValue { get; set; } = string.Empty;
+    private int TotalItems { get; set; } = 0;
+    private GetPaginatedDTO Paginated = new GetPaginatedDTO();
+    private List<GetMonitoringReportDTO> ResponseData = new List<GetMonitoringReportDTO>();
+    private CreateMonitoringReportDTO Payload = new CreateMonitoringReportDTO();
+
+    private bool tableLoading = true;
+
+    private int? selectedId = null;
+
+    private void OnCheckboxChangedHtml(ChangeEventArgs e, int id)
+    {
+        var isChecked = (bool)e.Value;
+
+        if (isChecked)
+        {
+            selectedId = id;
+        }
+        else if (selectedId == id)
+        {
+            selectedId = null;
+        }
+    }
+
+    private async Task CreateReport()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("payload", Payload);
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialogResult = await DialogService.Show<CreateMonitoringReport>("", parameters, options).Result;
+
+        if (dialogResult.Data != null && dialogResult.Data is CreateMonitoringReportDTO payload)
+        {
+            await ClientReportService.CreateMonitoringReport(payload);
+            await LoadData();
+        }
+        ;
+    }
+
+    private async Task UpdateReport()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("payload", Payload);
+        parameters.Add("Id", (int)selectedId);
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialogResult = await DialogService.Show<CreateMonitoringReport>("", parameters, options).Result;
+
+        if (dialogResult.Data != null && dialogResult.Data is CreateMonitoringReportDTO payload)
+        {
+            if (selectedId.HasValue)
+            {
+                await ClientReportService.UpdateMonitoringReport(payload, (int)selectedId);
+                await LoadData();
+            }
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        tableLoading = true;
+        await LoadData();
+        tableLoading = false;
+    }
+
+    private async void HandleRowsPerPageChangedInRazor(TableStates state)
+    {
+        tableLoading = true;
+        RowsPerPage = state.PageSize;
+        Paginated.Skip = state.Page * state.PageSize;
+        Paginated.Take = state.PageSize;
+        await LoadData();
+        tableLoading = false;
+        StateHasChanged();
+    }
+
+    private async void HandleSearchTextValue(string textValue)
+    {
+        if (!string.IsNullOrWhiteSpace(textValue))
+        {
+            tableLoading = true;
+            Paginated.SearchValue = textValue;
+            await LoadData();
+            tableLoading = false;
+            StateHasChanged();
+        }
+        else
+        {
+            tableLoading = true;
+            Paginated.SearchValue = string.Empty;
+            await LoadData();
+            tableLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async void HandlePaginatedBtn(TableStates state)
+    {
+        tableLoading = true;
+        Paginated.Skip = state.Page * state.PageSize;
+        Paginated.Take = state.PageSize;
+        await LoadData();
+        tableLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadData()
+    {
+        PaginatedTableResponse<GetMonitoringReportDTO> response = await ClientReportService.GetMonitoringReport(Paginated);
+        TotalItems = response.Count;
+        ResponseData = response.ResponseData;
+    }
+
+}

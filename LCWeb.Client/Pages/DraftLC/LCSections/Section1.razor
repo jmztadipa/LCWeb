@@ -1,0 +1,41 @@
+﻿<div class="input-main-cont">
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label">Date :</label>
+			<input type="date" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">PO No :</label>
+			<input type="text" placeholder="-" @bind="payload.S1PONo" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Type of LC :</label>
+			<MudRadioGroup @bind-Value="payload.S1LCType">
+				<MudRadio Value="@("Import")" Color="Color.Primary" UncheckedColor="Color.Default">Import</MudRadio>
+				<MudRadio Value="@("Domestic")" Color="Color.Info" UncheckedColor="Color.Default">Domestic</MudRadio>
+			</MudRadioGroup>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Confirmation :</label>
+			<MudRadioGroup @bind-Value="payload.S1Confirmation">
+				<MudRadio Value="@("Confirmed")" Color="Color.Primary" UncheckedColor="Color.Default">Confirmed</MudRadio>
+				<MudRadio Value="@("Unconfirmed")" Color="Color.Info" UncheckedColor="Color.Default">Unconfirmed </MudRadio>
+				<MudRadio Value="@("May Add")" Color="Color.Warning" UncheckedColor="Color.Default">May Add </MudRadio>
+			</MudRadioGroup>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Enclosures :</label>
+			<div class="d-flex gap-2" style="margin-left: -10px;">
+				<MudCheckBox @bind-Value="payload.S1Enclosure">PO</MudCheckBox>
+				<MudCheckBox @bind-Value="payload.S1Enclosure">Proforma Invoice</MudCheckBox>
+				<MudCheckBox @bind-Value="payload.S1Enclosure">IED</MudCheckBox>
+			</div>
+		</div>
+	</div>
+	<div class="c2"></div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

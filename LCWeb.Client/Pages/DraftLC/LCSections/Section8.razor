@@ -1,0 +1,27 @@
+﻿<div class="input-main-cont d-flex" >
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label text-nowrap">
+				Partial Shipment :
+			</label>
+			<MudRadioGroup @bind-Value="payload.S8PartialShipment">
+				<MudRadio Value="@("Allowed")" Color="Color.Primary" UncheckedColor="Color.Default">Allowed</MudRadio>
+				<MudRadio Value="@("Not Allowed")" Color="Color.Info" UncheckedColor="Color.Default">Not Allowed</MudRadio>
+			</MudRadioGroup>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label text-nowrap">
+				Transhipment :
+			</label>
+			<MudRadioGroup @bind-Value="payload.S8Transhipment">
+				<MudRadio Value="@("Allowed")" Color="Color.Primary" UncheckedColor="Color.Default">Allowed</MudRadio>
+				<MudRadio Value="@("Not Allowed")" Color="Color.Info" UncheckedColor="Color.Default">Not Allowed</MudRadio>
+			</MudRadioGroup>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

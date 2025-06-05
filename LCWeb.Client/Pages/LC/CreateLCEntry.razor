@@ -1,0 +1,206 @@
+﻿@page "/lc-entry"
+@inject IClientDraftLCService ClientDraftLCService
+@inject IClientLetterOfCreditService ClientLetterOfCreditService
+@inject ModifiedSnackBar ModifiedSnackbar
+@inject NavigationManager NavigationManager
+
+<PageTitle>LC Entry</PageTitle>
+
+<NavHeader _items="_items" title="LC Entry" />
+
+<form @onsubmit="CreateEntry">
+    <MudGrid>
+        <MudItem xs="12" sm="8">
+            <div style="background: #fff; padding: 30px 25px 15px 25px; border-bottom: 1px solid #E1E1E1;">
+                <div class="main-input-cont d-flex flex-row align-items-center">
+                    <label class="d-flex" style="width: 70px;">LC No. <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                    <select @onchange="OnLCSelected">
+                        <option value="0" disabled selected>-Select LC No-</option>
+                        @foreach (var lc in DraftLCList)
+                        {
+                            <option value="@lc.Id">@lc.Id</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <MudExpansionPanels Elevation="0">
+                <MudExpansionPanel Text="Section 1 - [LC Date,PO No.,Type of LC,Confirmation,Enclosured]">
+                    <Section1 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 2 - [Issuing Bank,Date and place of expiry]">
+                    <Section2 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 3 - [Draft at,Credit Available with/By,Advising Bank,SWIFT CODE]">
+                    <Section3 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 4 - [TT. Reimbrusement is]">
+                    <Section4 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 5 - [Beneficiary's Name,LC Amount,Item Decription]">
+                    <Section5 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 6 - [Manner and terms of Shipment]">
+                    <Section6 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 7 - [Latest shipment Date,Shipment From,Shipment To]">
+                    <Section7 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 8 - [Partial Shipment,Transhipment]">
+                    <Section8 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 9 - [Required Documents]">
+                    <Section9 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 10 - [All Banks charges outside the Philippines]">
+                    <Section10 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 11 - [Other documents and/or Instructions / Conditions]">
+                    <Section11 payload="payload" />
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Section 12 - [Terms and Conditions]">
+                    <Section12 payload="payload" />
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+            <div class="d-flex justify-content-start gap-2 mt-3">
+                <SubmitButton type="submit" isLoading="isLoading" button_name="SAVE" className="submit-btn" />
+                <SubmitButton type="button" button_name="RESET" className="def-btn" OnClick="Reset" />
+                <SubmitButton type="button" button_name="CANCEL" className="def-btn" OnClick="Cancel" />
+            </div>
+        </MudItem>
+        <MudItem xs="12" sm="4">
+            <div style="padding: 25px 25px 20px 25px; background: #fff; border-radius: 5px;">
+                <div class="main-input-cont">
+                    <label class="d-flex">Opening Bank <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                    <select @bind="lcPayload.OpeningBank">
+                        <option value="0" disabled>--Opening Bank--</option>
+                        @foreach (OpeningBank type in Enum.GetValues(typeof(OpeningBank)))
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    </select>
+                </div>
+                <div class="main-input-cont">
+                    <label>LC No :</label>
+                    <input type="text" placeholder="-" @bind="lcPayload.LCNo" />
+                </div>
+                <div class="main-input-cont">
+                    <label>Date Opened :</label>
+                    <input type="date" @bind="lcPayload.DateOpened" />
+                </div>
+                <div class="main-input-cont">
+                    <label>Expiry Date :</label>
+                    <input type="date" @bind="lcPayload.ExpiryDate" />
+                </div>
+                <div class="main-input-cont">
+                    <label>Latest Shipment Date :</label>
+                    <input type="date" @bind="lcPayload.LatestShipDate" />
+                </div>
+            </div>
+        </MudItem>
+    </MudGrid>
+
+</form>
+
+<InputDesign />
+
+@code {
+
+    private bool isLoading = false;
+    private CreateDraftLCSectionDTO payload = new CreateDraftLCSectionDTO();
+    private GetLCReleasingDTO getLCReleasingDTO = new GetLCReleasingDTO();
+    private List<GetDraftLCListDTO> DraftLCList = new List<GetDraftLCListDTO>();
+    private CreateLetterOfCreditsDTO lcPayload = new CreateLetterOfCreditsDTO();
+    private int selectedLCId;
+
+    private List<BreadcrumbItem> _items =
+    [
+        new("LETTER OF CREDIT", href: "/"),
+        new("DRAFT ENTRY", href: null, disabled: true)
+    ];
+
+    protected override async Task OnInitializedAsync()
+    {
+        DraftLCList = await ClientLetterOfCreditService.GetDraftLCList();
+    }
+
+    private async Task OnLCSelected(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int id) && id > 0)
+        {
+            selectedLCId = id;
+            ModifiedSnackbar.ShowMessage($"LC No. ({id}) has been selected", Severity.Success, null);
+            await GetDraftLCData(selectedLCId);
+        }
+    }
+
+    private async Task GetDraftLCData(int id)
+    {
+        getLCReleasingDTO = await ClientDraftLCService.GetSingleLCDraftSection((int)id);
+
+        payload.S1Date = getLCReleasingDTO.S1Date;
+        payload.S1Confirmation = getLCReleasingDTO.S1Confirmation;
+        payload.S1PONo = getLCReleasingDTO.S1PONo;
+        payload.S1LCType = getLCReleasingDTO.S1LCType;
+        payload.S1Enclosure = getLCReleasingDTO.S1Enclosure;
+
+        payload.S2DateOfExpiry = getLCReleasingDTO.S2DateOfExpiry;
+        payload.S2IssuingBank = getLCReleasingDTO.S2IssuingBank;
+        payload.S2PlaceOfExpiry = getLCReleasingDTO.S2PlaceOfExpiry;
+        payload.S2Remarks = getLCReleasingDTO.S2Remarks;
+
+        payload.S3AdvisingBank = getLCReleasingDTO.S3AdvisingBank;
+        payload.S3CreditAvailBy = getLCReleasingDTO.S3CreditAvailBy;
+        payload.S3CreditAvailWith = getLCReleasingDTO.S3CreditAvailWith;
+        payload.S3DifferredRemarks = getLCReleasingDTO.S3DifferredRemarks;
+        payload.S3DraftAt = getLCReleasingDTO.S3DraftAt;
+        payload.S3SwiftCode = getLCReleasingDTO.S3SwiftCode;
+
+        payload.S4Figures = getLCReleasingDTO.S4Figures;
+        payload.S4BeneficiaryName = getLCReleasingDTO.S4BeneficiaryName;
+        payload.S4Currency = getLCReleasingDTO.S4Currency;
+        payload.S4ForexRate = getLCReleasingDTO.S4ForexRate;
+        payload.S4ItemDescription = getLCReleasingDTO.S4ItemDescription;
+        payload.S4LCAmount = getLCReleasingDTO.S4LCAmount;
+
+        payload.S5TTReimbursement = getLCReleasingDTO.S5TTReimbursement;
+
+        payload.S6MannerOfShipment = getLCReleasingDTO.S6MannerOfShipment;
+        payload.S6ShipmentTerms = getLCReleasingDTO.S6ShipmentTerms;
+
+        payload.S7BeneficiaryName = getLCReleasingDTO.S7BeneficiaryName;
+        payload.S7ItemDescription = getLCReleasingDTO.S7ItemDescription;
+        payload.S7LatestShipDate = getLCReleasingDTO.S7LatestShipDate;
+        payload.S7ShipmentTo = getLCReleasingDTO.S7ShipmentTo;
+        payload.S7ShipmentFrom = getLCReleasingDTO.S7ShipmentFrom;
+        payload.S7LCAmount = getLCReleasingDTO.S7LCAmount;
+        payload.S7Remarks = getLCReleasingDTO.S7Remarks;
+
+        payload.S8PartialShipment = getLCReleasingDTO.S8PartialShipment;
+        payload.S8Transhipment = getLCReleasingDTO.S8Transhipment;
+
+        payload.S9ReqDocuments = getLCReleasingDTO.S9ReqDocuments;
+
+        payload.S10BankCharges = getLCReleasingDTO.S10BankCharges;
+
+        payload.S11TermsAndCond = getLCReleasingDTO.S11TermsAndCond;
+    }
+
+    private async Task CreateEntry()
+    {
+        isLoading = true;
+        lcPayload.DraftLCSectionId = selectedLCId;
+        await ClientLetterOfCreditService.CreateLC(lcPayload);
+        isLoading = false;
+    }
+
+    private void Reset()
+    {
+        payload = new CreateDraftLCSectionDTO();
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/lc-issuance");
+    }
+
+}

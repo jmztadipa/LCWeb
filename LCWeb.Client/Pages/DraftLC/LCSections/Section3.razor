@@ -1,0 +1,45 @@
+﻿<div class="input-main-cont">
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label">Draft At:</label>
+			<MudRadioGroup @bind-Value="payload.S3DraftAt">
+				<MudRadio Value="@("Sight")" Color="Color.Primary" UncheckedColor="Color.Default">Sight</MudRadio>
+				<MudRadio Value="@("Usance LC")" Color="Color.Info" UncheckedColor="Color.Default">Usance LC -> Days after BL date</MudRadio>
+			</MudRadioGroup>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Credit Available with :</label>
+			<MudRadioGroup @bind-Value="payload.S3CreditAvailWith">
+				<MudRadio Value="@("Any Bank")" Color="Color.Primary" UncheckedColor="Color.Default">Any Bank</MudRadio>
+				<MudRadio Value="@("Advising Bank")" Color="Color.Info" UncheckedColor="Color.Default">Advising Bank</MudRadio>
+			</MudRadioGroup>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Credit Available by :</label>
+			<MudRadioGroup @bind-Value="payload.S3CreditAvailBy">
+				<MudRadio Value="@("Payment ")" Color="Color.Primary" UncheckedColor="Color.Default">Payment</MudRadio>
+				<MudRadio Value="@("Negotiation")" Color="Color.Info" UncheckedColor="Color.Default">Negotiation</MudRadio>
+				<MudRadio Value="@("Acceptance")" Color="Color.Warning" UncheckedColor="Color.Default">Acceptance</MudRadio>
+			</MudRadioGroup>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Advising Bank :</label>
+			<textarea rows="6" @bind="payload.S3AdvisingBank" placeholder="(at issuing Bank's option,if no nomination)"></textarea>
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">SWIFT CODE :</label>
+			<input type="text" placeholder="-" @bind="payload.S3SwiftCode" />
+		</div>
+	</div>
+	<div class="c2">
+		<div class="input-cont">
+			<label class="inp-label text-nowrap">Differred Remarks :</label>
+			<input type="text" placeholder="-" @bind="payload.S3DifferredRemarks" />
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

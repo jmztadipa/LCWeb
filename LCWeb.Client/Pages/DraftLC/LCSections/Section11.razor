@@ -1,0 +1,58 @@
+﻿<div class="input-main-cont align-items-center" style="grid-template-columns: 1fr 3fr">
+	<div class="c1 w-100">
+		<div class="input-cont">
+			<label class="inp-label w-100">
+				Other documents and/or Instructions / Conditions :
+			</label>
+		</div>
+	</div>
+	<div class="c2">
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB3" Style="margin-left: -10px;">
+				All copies of shipping documents such as but not limited to bill of lading (BL), air waybill (AWB), or postal receipt must
+					legibly contain the L/C No. pertaining to the shipment.
+			</MudCheckBox>
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				Negotiating bank should cable advise us of negotiations under this credit at least three (3) banking
+				days prior to value date of reimbursement claim.
+			</MudCheckBox>
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				Documents must be presented within twenty one (21) days from shipment date provided within LC validity.
+			</MudCheckBox>
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				Amendment charges shall be borne by the party who made the discrepancy.
+			</MudCheckBox>
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				All bulk, break-bulk, containerized and non-containeraized cargoes shall be subject to a Load Port Survey (LPS) at the country os Supply or Export in compliance with the Philippines Bureau of Customs Administrative Order. Cargo Surveyor shall be conducted by an Accredited Cargo Surveyor (ACS) at the port of loading or in the case of containerized cargo, inspection is conducted at the place of container stuffing.
+			</MudCheckBox>
+		</div>
+	</div>
+</div>
+
+
+@code {
+
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+
+	private string FreightOption { get; set; }
+	private bool NotifyChecked { get; set; }
+
+	public bool CB1 { get; set; } = true;
+	public bool CB2 { get; set; } = true;
+	public bool CB3 { get; set; } = true;
+	public bool CB4 { get; set; } = true;
+	public bool CB5 { get; set; } = true;
+
+}

@@ -10,6 +10,7 @@ namespace LCWeb.Shared.DTOs.DraftLCDTO
     public class CreateDraftLCSectionDTO
     {
         //SECTION 1
+        public DateTime S1Date { get; set; }
         public string S1PONo { get; set; } = string.Empty;
         public string S1LCType { get; set; } = string.Empty;
         public string S1Confirmation { get; set; } = string.Empty;
@@ -17,7 +18,7 @@ namespace LCWeb.Shared.DTOs.DraftLCDTO
 
         //SECTION 2
         public string S2IssuingBank { get; set; } = string.Empty;
-        public DateTime S2DateOfExpiry { get; set; }
+        public DateTime S2DateOfExpiry { get; set; } = DateTime.Now;
         public string S2Remarks { get; set; } = string.Empty;
         public string S2PlaceOfExpiry { get; set; } = string.Empty;
 
@@ -33,7 +34,17 @@ namespace LCWeb.Shared.DTOs.DraftLCDTO
         public string S4BeneficiaryName { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(18,2)")]
+        public decimal S4Currency { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal S4Figures { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal S4ForexRate { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal S4LCAmount { get; set; } = 0;
+
         public string S4ItemDescription { get; set; } = string.Empty;
 
         //SECTION 5
@@ -49,7 +60,7 @@ namespace LCWeb.Shared.DTOs.DraftLCDTO
         [Column(TypeName = "decimal(18,2)")]
         public decimal S7LCAmount { get; set; } = 0;
         public string S7ItemDescription { get; set; } = string.Empty;
-        public DateTime S7LatestShipDate { get; set; }
+        public DateTime S7LatestShipDate { get; set; } = DateTime.Now;
         public string S7Remarks { get; set; } = string.Empty;
         public string S7ShipmentFrom { get; set; } = string.Empty;
         public string S7ShipmentTo { get; set; } = string.Empty;

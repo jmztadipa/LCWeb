@@ -1,3 +1,22 @@
 ﻿@page "/"
+@using LCWeb.Client.Pages.Dashboard.CardContainer
 
 <PageTitle>Home</PageTitle>
+
+<NavHeader _items="_items" title="Home" />
+
+<MudGrid Justify="Justify.Center">
+    <GlobalCard Style="c1" Title="Draft LC Request" Value="15" Icon="/images/dashboard/notification.png" />
+    <GlobalCard Style="c2" Title="Saved Draft LCs for Opening without Issuing Bank" Value="7" Icon="/images/dashboard/inbox.png" />
+    <GlobalCard Style="c3" Title="Release LC's" Value="38" Icon="/images/dashboard/written-paper.png" />
+    <GlobalCard Style="c4" Title="LC for Opening Application" Value="56" Icon="/images/dashboard/double-sided-arrow.png" />
+    <GlobalCard Style="c5" Title="LC's for Due Date (30 days or more)" Value="18" Icon="/images/dashboard/calendar.png" />
+</MudGrid>
+
+@code{
+    private List<BreadcrumbItem> _items =
+        [
+        new("Home", href: "/"),
+        new("Dashboard", href: null, disabled: true)
+    ];
+}

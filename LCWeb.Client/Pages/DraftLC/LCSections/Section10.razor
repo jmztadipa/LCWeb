@@ -1,0 +1,18 @@
+﻿<div class="input-main-cont d-flex" >
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label" style="width: 160px;">
+				All Banks charges outside the Philippines :
+			</label>
+			<MudRadioGroup @bind-Value="payload.S10BankCharges">
+				<MudRadio Value="@("Beneficiary's Account")" Color="Color.Primary" UncheckedColor="Color.Default">Beneficiary's Account</MudRadio>
+				<MudRadio Value="@("Buyer's Account")" Color="Color.Info" UncheckedColor="Color.Default">Buyer's Account</MudRadio>
+			</MudRadioGroup>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

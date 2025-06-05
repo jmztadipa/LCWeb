@@ -89,7 +89,37 @@
     }
 
     /* BUTTONS */
-    
+    .header-btn{
+        font-family: 'Poppins';
+        border: 1px solid #d8dce2;
+        padding: 8px 13px;
+        color: #2A3547;
+        border-radius: 6px;
+        background: #fff;
+        transition: .3s ease;
+    }
+
+    .header-btn.add {
+        font-family: 'Poppins';
+        border: 0px;
+        padding: 8px 13px;
+        color: #fff;
+        border-radius: 6px;
+        background: #FF6C10;
+        transition: .3s ease;
+    }
+
+    .header-btn.add:hover {
+        background: #cd601c;
+    }
+
+    .header-btn i {
+        margin-right: 8px;
+    }
+
+    .header-btn:hover{
+        background: #f1f1f1;
+    }
 
     .edit-icon {
         margin-top: 4px;
@@ -110,6 +140,29 @@
         font-size: 11px;
     }
 
+    /* TYPHOGRAPY */
+    .mud-typography-body1{
+        font-size: 13px;
+        font-family: 'Poppins';
+    }
+
+    .mud-breadcrumb-item > a{
+        color: #fff;
+    }
+
+    .mud-breadcrumb-item.mud-disabled > a{
+        color: #f0f0f0;
+    }
+
+    .mud-breadcrumb-separator > span{
+        color: #f0f0f0;
+        opacity: 1;
+    }
+    .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text{
+        font-family: 'Poppins';
+        font-size: 14px;
+    }
+
     @@media only screen and (max-width: 960px){
        /*  .mud-drawer.mud-drawer-responsive.mud-drawer-pos-left, .mud-drawer.mud-drawer-persistent.mud-drawer-pos-left {
             width: 200px;
@@ -117,4 +170,4 @@
     }
 </style>
 
-<div style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: -1; background: #F8F9FA" />
+<div style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: -1; background: #f6f6f6" />

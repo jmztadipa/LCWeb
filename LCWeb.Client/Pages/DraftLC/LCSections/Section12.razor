@@ -1,0 +1,16 @@
+﻿<div class="input-main-cont">
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label">
+				Additional terms and conditions :
+			</label>
+			<textarea rows="6" @bind="payload.S11TermsAndCond" placeholder="-"></textarea>
+		</div>
+	</div>
+	<div class="c2"></div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

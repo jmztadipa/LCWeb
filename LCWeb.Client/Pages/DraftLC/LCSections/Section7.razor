@@ -1,0 +1,28 @@
+﻿<div class="input-main-cont">
+	<div class="c1">
+		<div class="input-cont">
+			<label class="inp-label">
+				Latest shipment Date / No. Of Days :
+			</label>
+			<input type="date" @bind="payload.S7LatestShipDate" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Remarks :</label>
+			<input type="text" placeholder="-" @bind="payload.S7Remarks" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Shipment From :</label>
+			<input type="text" placeholder="Origin" @bind="payload.S7ShipmentFrom" />
+		</div>
+		<div class="input-cont">
+			<label class="inp-label">Shipment To :</label>
+			<input type="text" placeholder="Destination" @bind="payload.S7ShipmentTo" />
+		</div>
+	</div>
+	<div class="c2"></div>
+</div>
+
+
+@code {
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+}

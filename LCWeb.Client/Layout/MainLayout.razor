@@ -1,25 +1,28 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <style>
     .mud-appbar {
-        position: fixed !important;
-        top: 0;
-        z-index: 1100;
+    position: fixed !important;
+    top: 0;
+    z-index: 1100;
+    padding-top: 3px;
     }
 
     .mud-appbar:nth-of-type(2) {
-        top: 66px !important;
+    top: 66px !important;
     }
 
     .mud-main-content {
-        padding-top: 144px !important; /* Account for both app bars */
+    padding-top: 110px !important; /* Account for both app bars */
     }
 
     .mud-button {
-        text-transform: none !important;
+    text-transform: none !important;
     }
 
     .mud-button .mud-button-label {
@@ -31,55 +34,63 @@
 
 <MudLayout>
     <!-- Top Navigation Bar -->
-    <MudAppBar Elevation="1" Dense="false" Style="background-color: white; color: #333; height: 65px;">
+    <MudAppBar Elevation="1" Dense="false" Style="background-color: white; color: #333; height: 70px;">
         <MudContainer MaxWidth="MaxWidth.Large" Class="px-4 py-3">
             <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                        <img src="images/sys/logo.png" style="width: 41px;" />
-                    </MudStack>
+                <img src="images/sys/logo.png" style="width: 37px;" />
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                    <MudButton StartIcon="@Icons.Material.Outlined.Dashboard"
+                    Color="Color.Warning"
+                    Variant="Variant.Text"
+                    OnClick="NavigateToHome"
+                    Class="text-capitalize">
+                        Home
+                    </MudButton>
+
+                    <MudMenu StartIcon="@Icons.Material.Outlined.AllInbox"
+                    Color="Color.Default"
+                    Variant="Variant.Text"
+                    Label="Draft Letter of Credit"
+                    Class="text-capitalize"
+                    EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                        <MudMenuItem Href="/draft-lc-entry">Draft LC Entry</MudMenuItem>
+                        <MudMenuItem Href="/draft-lc-releasing">Draft LC Releasing</MudMenuItem>
+                        <MudMenuItem Href="/release-draft-lc">Released Draft LC</MudMenuItem>
+                        <MudMenuItem Href="/vendor-maintenance">Vendor Maintenance</MudMenuItem>
+                    </MudMenu>
+
+                    <MudMenu StartIcon="@Icons.Material.Outlined.Assignment"
+                             Color="Color.Default"
+                             Variant="Variant.Text"
+                             Label="Letter of Credit"
+                             Class="text-capitalize"
+                             EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                        <MudMenuItem Href="/opening-computation">Opening Computation</MudMenuItem>
+                        <MudMenuItem Href="/lc-entry">LC Entry</MudMenuItem>
+                        <MudMenuItem Href="/lc-issuance">LC Issuance</MudMenuItem>
+                        <MudMenuItem Href="/lc-released">Released LC</MudMenuItem>
+                        <MudMenuItem Href="/lc-amend">Amend LC</MudMenuItem>
+                        <MudMenuItem Href="/check-breakdown">Check Breakdown</MudMenuItem>
+                        <MudMenuItem Href="/vendor-maintenance">Vendor Maintenance</MudMenuItem>
+                    </MudMenu>
+
+                    <MudMenu StartIcon="@Icons.Material.Outlined.Article"
+                             Color="Color.Default"
+                             Variant="Variant.Text"
+                             Label="Inquiry / Reports"
+                             Class="text-capitalize"
+                             EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                        <MudMenuItem Href="/monitoring-report">Monitoring Report</MudMenuItem>
+                        <MudMenuItem Href="/amendment-report">Amendment Report</MudMenuItem>
+                        <MudMenuItem Href="/vendor-maintenance">Vendor Maintenance</MudMenuItem>
+                    </MudMenu>
+
                 </MudStack>
-                <img src="images/sys/user.png" style="width: 37px;" />
-            </MudStack>
-        </MudContainer>
-    </MudAppBar>
+                <div>
+                    <span class="mr-2" style="font-family: 'Poppins'">jztadipa</span>
+                    <img src="images/sys/user.png" style="width: 35px;" />
 
-    <!-- Secondary Navigation Bar -->
-    <MudAppBar Elevation="0" Dense="true" Style="background-color: #f8f9fa; border-bottom: 1px solid #e9ecef; top: 66px;">
-        <MudContainer MaxWidth="MaxWidth.Large" Class="px-4">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
-                <MudButton StartIcon="@Icons.Material.Filled.Dashboard"
-                           Color="Color.Primary"
-                           Variant="Variant.Text"
-                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                           Class="text-capitalize">
-                    Dashboard
-                </MudButton>
-
-                <MudButton StartIcon="@Icons.Material.Filled.AllInbox"
-                           Color="Color.Default"
-                           Variant="Variant.Text"
-                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                           Class="text-capitalize">
-                    Draft Letter of credit
-                </MudButton>
-
-                <MudButton StartIcon="@Icons.Material.Filled.Assignment"
-                           Color="Color.Default"
-                           Variant="Variant.Text"
-                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                           Class="text-capitalize">
-                    Letter of Credit
-                </MudButton>
-
-                <MudButton StartIcon="@Icons.Material.Filled.Article"
-                           Color="Color.Default"
-                           Variant="Variant.Text"
-                           EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                           Class="text-capitalize">
-                    Inquiry / Reports
-                </MudButton>
-
+                </div>
             </MudStack>
         </MudContainer>
     </MudAppBar>
@@ -107,6 +118,11 @@
     {
         _isDarkMode = !_isDarkMode;
         // You can implement actual theme switching logic here
+    }
+
+    private void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
 

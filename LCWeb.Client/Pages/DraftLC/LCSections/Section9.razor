@@ -1,0 +1,91 @@
+﻿<div class="input-main-cont align-items-center" style="grid-template-columns: 1fr 3fr">
+	<div class="c1 w-100">
+		<div class="input-cont">
+			<label class="inp-label w-100">
+				Other documents and/or Instructions / Conditions :
+			</label>
+		</div>
+	</div>
+	<div class="c2">
+		<div class="d-flex flex-column mb-7">
+			<MudCheckBox @bind-Checked="CB1" Style="margin-left: -10px;">
+				Full set clean <b>ON BOARD</b> ocean bills of lading in three (3) originals plus one (1) non-negotiable copy
+				issued to the order of issuing bank, marked "Freight"
+			</MudCheckBox>
+			<div class="d-flex align-items-center mt-n2">
+				<MudRadioGroup T="string" @bind-SelectedOption="FreightOption" Class="me-2">
+					<MudRadio Option="@("PREPAID")" Color="Color.Primary" UncheckedColor="Color.Default">PREPAID</MudRadio>
+					<MudRadio Option="@("COLLECT")" Color="Color.Info" UncheckedColor="Color.Default">COLLECT</MudRadio>
+				</MudRadioGroup>
+				<MudCheckBox @bind-Checked="NotifyChecked">
+					<b>NOTIFY:</b> Semirara Mining & Power Corporation / Tel#888-3957 / Fax# 8883675
+				</MudCheckBox>
+			</div>
+		</div>
+
+		<div class="d-flex flex-column mb-7">
+			<MudCheckBox @bind-Checked="CB2" Style="margin-left: -10px;">
+				'One (1) .marked <b>ORIGINAL</b> air waybill plus two (2) non-negotiable copies consigned to the order of issuing bank, marked
+				"Freight
+			</MudCheckBox>
+			<div class="d-flex align-items-center mt-n2">
+				<MudRadioGroup T="string" @bind-SelectedOption="FreightOption" Class="me-2">
+					<MudRadio Option="@("PREPAID")" Color="Color.Primary" UncheckedColor="Color.Default">PREPAID</MudRadio>
+					<MudRadio Option="@("COLLECT")" Color="Color.Info" UncheckedColor="Color.Default">COLLECT</MudRadio>
+				</MudRadioGroup>
+				<MudCheckBox @bind-Checked="NotifyChecked">
+					<b>NOTIFY:</b> Semirara Mining & Power Corporation / Tel#888-3957 / Fax# 8883675
+				</MudCheckBox>
+			</div>
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB3" Style="margin-left: -10px;">
+				Signed Commercial Invoice in one (1) original and three (3) copies
+			</MudCheckBox>
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				Packing List in one (1) original and three (3) copies
+			</MudCheckBox>
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				One (1) full set of non-negotiable shipping documents should be sent directly to the Buyer via courier & email to
+				mtramos@semirarampc.com. Beneficiary's Certificate to this effect is required for payment negotiation.
+			</MudCheckBox>
+		</div>
+
+		<div class="d-flex align-content-center gap-2 mb-2 input-cont">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				Certificate of Origrin . FORM NO
+			</MudCheckBox>
+			<input type="text" placeholder="-" @bind="payload.S9ReqDocuments" style="width: 150px;" />
+		</div>
+
+		<div class="d-flex flex-column mb-2">
+			<MudCheckBox @bind-Checked="CB4" Style="margin-left: -10px;">
+				Invoice should show total amount of Purchase Order less downpayment settled outside the LC.
+			</MudCheckBox>
+		</div>
+
+	</div>
+</div>
+
+
+@code {
+
+	[Parameter] public CreateDraftLCSectionDTO payload { get; set; } = new CreateDraftLCSectionDTO();
+
+	private string FreightOption { get; set; }
+	private bool NotifyChecked { get; set; }
+
+	public bool CB1 { get; set; } = true;
+	public bool CB2 { get; set; } = true;
+	public bool CB3 { get; set; } = true;
+	public bool CB4 { get; set; } = true;
+	public bool CB5 { get; set; } = true;
+
+}

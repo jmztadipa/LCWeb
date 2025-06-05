@@ -1,0 +1,94 @@
+﻿@using LCWeb.Shared.DTOs.MaintenanceDTO
+@inject IClientVendorMaintenanceService ClientVendorMaintenanceService
+
+<InputDesign />
+
+<MudDialog>
+    <DialogContent>
+
+        <div class="px-sm-2 mt-n4 px-1 pb-4 form-div">
+            @if(Id == null)
+            {
+                <DialogHeader title="ADD VENDOR MAINTENANCE" icon="@Icons.Material.Filled.Add" />
+            }
+            else
+            {
+                <DialogHeader title="EDIT VENDOR MAINTENANCE" icon="@Icons.Material.Filled.Edit" />
+            }
+
+            <div class="mt-3">
+                <form @onsubmit="HandleSubmit">
+                    <div class="main-input-cont">
+                        <label class="d-flex">Vendor Code <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                        <input type="text" @bind="payload.Code" placeholder="sample code">
+                    </div>
+                    <div class="main-input-cont">
+                        <label class="d-flex">Description</label>
+                        <textarea rows="5" @bind="payload.Description" placeholder="e.g. a sample value or a short description"></textarea>
+                    </div>
+                    <div class="main-input-cont">
+                        <label class="d-flex">Address 1 <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                        <input type="text" @bind="payload.Address1" placeholder="-">
+                    </div>
+                    <div class="main-input-cont">
+                        <label class="d-flex">Address 2 <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                        <input type="text" @bind="payload.Address2" placeholder="-">
+                    </div>
+                    <div class="main-input-cont">
+                        <label class="d-flex">Address 3 <label class="ml-1" style="color: #FF4F53;">*</label></label>
+                        <input type="text" @bind="payload.Address3" placeholder="-">
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <SubmitButton isLoading="isLoading" button_name="SUBMIT" className="submit-btn" />
+                        <SubmitButton type="button" button_name="REFRESH" className="def-btn" OnClick="Refresh" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = new MudDialogInstance();
+
+    [Parameter] public int? Id { get; set; }
+
+    [Parameter] public CreateVendorMaintenanceDTO? payload { get; set; } = new CreateVendorMaintenanceDTO();
+
+    public GetVendorMaintenanceDTO? ResponseData = new GetVendorMaintenanceDTO();
+
+    public bool isLoading = false;
+
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            ResponseData = await ClientVendorMaintenanceService.GetSingleVendor((int)Id);
+
+            payload.Code = ResponseData.Code;
+            payload.Description = ResponseData.Description;
+            payload.Address1 = ResponseData.Address1;
+            payload.Address2 = ResponseData.Address2;
+            payload.Address3 = ResponseData.Address3;
+        }
+        else
+        {
+            payload = new CreateVendorMaintenanceDTO();
+        }
+    }
+
+    private void Refresh()
+    {
+        payload = new CreateVendorMaintenanceDTO();
+    }
+
+    void HandleSubmit()
+    {
+        MudDialog.Close(DialogResult.Ok(payload));
+    }
+
+}
