@@ -1,5 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Security.Claims
+@using LCWeb.Client.Pages.Auth
+@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IClientAuthService ClientAuthService
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -26,9 +31,9 @@
     }
 
     .mud-button .mud-button-label {
-        font-weight: 300;
-        letter-spacing: -.1px;
-        font-family: 'Poppins';
+    font-weight: 300;
+    letter-spacing: -.1px;
+    font-family: 'Poppins';
     }
 </style>
 
@@ -39,13 +44,19 @@
             <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
                 <img src="images/sys/logo.png" style="width: 37px;" />
                 <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
-                    <MudButton StartIcon="@Icons.Material.Outlined.Dashboard"
-                    Color="Color.Warning"
+                    <MudMenu StartIcon="@Icons.Material.Outlined.Dashboard"
+                    Color="Color.Default"
                     Variant="Variant.Text"
-                    OnClick="NavigateToHome"
-                    Class="text-capitalize">
-                        Home
-                    </MudButton>
+                    Label="Home"
+                    Class="text-capitalize"
+                    EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                        <MudMenuItem Href="/">Dashboard</MudMenuItem>
+                        <MudMenuItem Href="/permission">Permission</MudMenuItem>
+                        <MudMenuItem Href="/role">Role</MudMenuItem>
+                        <MudMenuItem Href="/user-permission">User Permission</MudMenuItem>
+                        <MudMenuItem Href="/users">Users</MudMenuItem>
+                        <MudMenuItem Href="/vendor-maintenance">Vendor Maintenance</MudMenuItem>
+                    </MudMenu>
 
                     <MudMenu StartIcon="@Icons.Material.Outlined.AllInbox"
                     Color="Color.Default"
@@ -60,11 +71,11 @@
                     </MudMenu>
 
                     <MudMenu StartIcon="@Icons.Material.Outlined.Assignment"
-                             Color="Color.Default"
-                             Variant="Variant.Text"
-                             Label="Letter of Credit"
-                             Class="text-capitalize"
-                             EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                    Color="Color.Default"
+                    Variant="Variant.Text"
+                    Label="Letter of Credit"
+                    Class="text-capitalize"
+                    EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
                         <MudMenuItem Href="/opening-computation">Opening Computation</MudMenuItem>
                         <MudMenuItem Href="/lc-entry">LC Entry</MudMenuItem>
                         <MudMenuItem Href="/lc-issuance">LC Issuance</MudMenuItem>
@@ -75,22 +86,32 @@
                     </MudMenu>
 
                     <MudMenu StartIcon="@Icons.Material.Outlined.Article"
-                             Color="Color.Default"
-                             Variant="Variant.Text"
-                             Label="Inquiry / Reports"
-                             Class="text-capitalize"
-                             EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                    Color="Color.Default"
+                    Variant="Variant.Text"
+                    Label="Inquiry / Reports"
+                    Class="text-capitalize"
+                    EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
                         <MudMenuItem Href="/monitoring-report">Monitoring Report</MudMenuItem>
                         <MudMenuItem Href="/amendment-report">Amendment Report</MudMenuItem>
                         <MudMenuItem Href="/vendor-maintenance">Vendor Maintenance</MudMenuItem>
                     </MudMenu>
 
                 </MudStack>
-                <div>
-                    <span class="mr-2" style="font-family: 'Poppins'">jztadipa</span>
-                    <img src="images/sys/user.png" style="width: 35px;" />
-
-                </div>
+                <MudMenu TransformOrigin="Origin.BottomCenter">
+                    <ActivatorContent>
+                        <div class="-d-flex align-items-center position-relative">
+                            <span class="mr-2" style="font-family: 'Poppins'; color: #FF7A27; font-style: italic; font-weight: 500;">
+                                @username
+                                <i class="fa-solid fa-chevron-down ml-1" style="font-size: 12px;"></i>
+                            </span>
+                            <img src="images/sys/user1.png" style="width: 35px;" />
+                        </div>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem OnClick="ChangePass">Change Password</MudMenuItem>
+                        <MudMenuItem OnClick="Logout">Logout</MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
             </MudStack>
         </MudContainer>
     </MudAppBar>
@@ -108,6 +129,15 @@
 @code {
     bool _drawerOpen = true;
     bool _isDarkMode = false;
+    private string? username = string.Empty;
+    private ChangePassDTO cpassPayload = new ChangePassDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState token_auth_state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = token_auth_state.User;
+        username = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value;
+    }
 
     void DrawerToggle()
     {
@@ -123,6 +153,30 @@
     private void NavigateToHome()
     {
         NavigationManager.NavigateTo("/");
+    }
+
+    private async Task ChangePass()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("payload", cpassPayload);
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialogResult = await DialogService.Show<ChangePassword>("", parameters, options).Result;
+
+        if (dialogResult.Data != null && dialogResult.Data is ChangePassDTO payload)
+        {
+            await ClientAuthService.ChangePassword(payload);
+            cpassPayload = new ChangePassDTO();
+        };
+    }
+
+    private async Task Logout()
+    {
+        string result = await ClientAuthService.Logout();
+
+        if (result == "success")
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 }
 

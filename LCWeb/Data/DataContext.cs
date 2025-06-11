@@ -1,4 +1,5 @@
-﻿using LCWeb.Shared.Models.DraftLC;
+﻿using LCWeb.Shared.Models.Auth;
+using LCWeb.Shared.Models.DraftLC;
 using LCWeb.Shared.Models.LC;
 using LCWeb.Shared.Models.Maintenance;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,11 @@ namespace LCWeb.Data
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+
+
+        //USERS
+        public DbSet<User> Users => Set<User>();
+        public DbSet<UserDetails> UserDetails => Set<UserDetails>();
 
         //DRAFT LC
         public DbSet<DraftLCSection> DraftLCSections => Set<DraftLCSection>();

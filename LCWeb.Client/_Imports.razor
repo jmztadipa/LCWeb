@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.JSInterop
 @using LCWeb.Client
 @using LCWeb.Client.Layout
@@ -19,12 +20,16 @@
 @using LCWeb.Client.Pages.DraftLC.LCSections
 
 @* SERVICES *@
+@using LCWeb.Client.Services.ClientAuthService
 @using LCWeb.Client.Services.ClientDraftLCService
 @using LCWeb.Client.Services.ClientVendorMaintenanceService
 @using LCWeb.Client.Services.ClientReportService
 @using LCWeb.Client.Services.ClientLetterOfCreditService
+@using LCWeb.Client.Services.ClientUserManagementService
 
 @* DTOS *@
+@using LCWeb.Shared.DTOs.AuthDTO;
+@using LCWeb.Shared.DTOs.UserManagementDTO;
 @using LCWeb.Shared.DTOs.DraftLCDTO;
 @using LCWeb.Shared.DTOs.MaintenanceDTO;
 @using LCWeb.Shared.DTOs.LetterOfCreditsDTO;

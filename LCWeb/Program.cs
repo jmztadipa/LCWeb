@@ -1,15 +1,24 @@
+using System.Text;
 using LCWeb.Data;
+using LCWeb.Server.Services.AuthService;
 using LCWeb.Services.DraftLCService;
 using LCWeb.Services.LetterOfCreditService;
 using LCWeb.Services.ReportService;
+using LCWeb.Services.UserManagementService;
 using LCWeb.Services.VendorMaintenanceService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'Connection' not found.");
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
+builder.Services.AddHttpContextAccessor();
+
 //SERVICES
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 builder.Services.AddScoped<IDraftLCService, DraftLCService>();
 builder.Services.AddScoped<IVendorMaintenanceService, VendorMaintenanceService>();
 builder.Services.AddScoped<IReportService, ReportService>();
@@ -17,7 +26,19 @@ builder.Services.AddScoped<ILetterOfCreditService, LetterOfCreditService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-    
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+            .GetBytes(builder.Configuration.GetValue<string>("AccessToken")!)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

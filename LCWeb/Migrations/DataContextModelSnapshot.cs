@@ -22,6 +22,91 @@ namespace LCWeb.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("LCWeb.Shared.Models.Auth.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<byte[]>("Password")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenCreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RefreshTokenExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VerificationToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.Auth.UserDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserDetails", (string)null);
+                });
+
             modelBuilder.Entity("LCWeb.Shared.Models.DraftLC.DraftLCSection", b =>
                 {
                     b.Property<int>("Id")
@@ -171,7 +256,7 @@ namespace LCWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DraftLCSections");
+                    b.ToTable("DraftLCSections", (string)null);
                 });
 
             modelBuilder.Entity("LCWeb.Shared.Models.LC.LetterOfCredit", b =>
@@ -211,7 +296,7 @@ namespace LCWeb.Migrations
 
                     b.HasIndex("DraftLCSectionId");
 
-                    b.ToTable("LetterOfCredits");
+                    b.ToTable("LetterOfCredits", (string)null);
                 });
 
             modelBuilder.Entity("LCWeb.Shared.Models.Maintenance.AmendmentReport", b =>
@@ -242,7 +327,7 @@ namespace LCWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AmendmentReports");
+                    b.ToTable("AmendmentReports", (string)null);
                 });
 
             modelBuilder.Entity("LCWeb.Shared.Models.Maintenance.MonitoringReport", b =>
@@ -277,7 +362,7 @@ namespace LCWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MonitoringReports");
+                    b.ToTable("MonitoringReports", (string)null);
                 });
 
             modelBuilder.Entity("LCWeb.Shared.Models.Maintenance.VendorMaintenance", b =>
@@ -310,7 +395,18 @@ namespace LCWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VendorMaintenances");
+                    b.ToTable("VendorMaintenances", (string)null);
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.Auth.UserDetails", b =>
+                {
+                    b.HasOne("LCWeb.Shared.Models.Auth.User", "User")
+                        .WithOne("UserDetails")
+                        .HasForeignKey("LCWeb.Shared.Models.Auth.UserDetails", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LCWeb.Shared.Models.LC.LetterOfCredit", b =>
@@ -322,6 +418,12 @@ namespace LCWeb.Migrations
                         .IsRequired();
 
                     b.Navigation("DraftLCSection");
+                });
+
+            modelBuilder.Entity("LCWeb.Shared.Models.Auth.User", b =>
+                {
+                    b.Navigation("UserDetails")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LCWeb.Shared.Models.DraftLC.DraftLCSection", b =>
